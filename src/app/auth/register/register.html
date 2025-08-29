@@ -1,0 +1,124 @@
+<div class="auth-wrapper">
+  <div class="brand-section">
+    <h1 class="brand-title">Metro Cuadrado</h1>
+    <div class="brand-subtitle">Sistema profesional de cálculo de materiales de construcción</div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">
+      <h2>Crear cuenta</h2>
+      <p class="card-subtitle">Únete a nuestra plataforma de construcción</p>
+    </div>
+    
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre completo</mat-label>
+          <input matInput type="text" formControlName="name" placeholder="Ingresa tu nombre completo" autocomplete="name">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+        <div class="field-error" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+          {{getErrorMessage('name')}}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Teléfono</mat-label>
+          <input matInput type="tel" formControlName="phone" placeholder="+1 (555) 123-4567" autocomplete="tel">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+        <div class="field-error" *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched">
+          {{getErrorMessage('phone')}}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Empresa (opcional)</mat-label>
+          <input matInput type="text" formControlName="company" placeholder="Nombre de tu empresa" autocomplete="organization">
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="tu@email.com" autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+        <div class="field-error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          {{getErrorMessage('email')}}
+        </div>
+        <div class="email-check" *ngIf="form.get('email')?.valid && form.get('email')?.value">
+          <mat-icon class="check-icon">check_circle</mat-icon>
+          <span>Email válido</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+        <div class="password-strength" *ngIf="form.get('password')?.value">
+          <div class="strength-bar">
+            <div class="strength-fill" [class]="getPasswordStrengthClass()" [style.width.%]="getPasswordStrength()"></div>
+          </div>
+          <div class="strength-text">{{getPasswordStrengthText()}}</div>
+        </div>
+        <div class="field-error" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          {{getErrorMessage('password')}}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirmar contraseña</mat-label>
+          <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" placeholder="Repite tu contraseña" autocomplete="new-password">
+          <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+            <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+        <div class="field-error" *ngIf="passwordMismatch">
+          Las contraseñas no coinciden
+        </div>
+        <div class="field-error" *ngIf="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched && !passwordMismatch">
+          {{getErrorMessage('confirmPassword')}}
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <mat-checkbox formControlName="acceptTerms" class="terms-checkbox">
+          Acepto los <a href="#" class="terms-link">términos y condiciones</a> y la <a href="#" class="terms-link">política de privacidad</a>
+        </mat-checkbox>
+        <div class="field-error" *ngIf="form.get('acceptTerms')?.invalid && form.get('acceptTerms')?.touched">
+          Debes aceptar los términos y condiciones
+        </div>
+      </div>
+
+      <div class="newsletter-section">
+        <mat-checkbox formControlName="newsletter" class="newsletter-checkbox">
+          Quiero recibir noticias y actualizaciones por email
+        </mat-checkbox>
+      </div>
+
+      <button mat-raised-button color="primary" class="submit-btn" type="submit" [disabled]="form.invalid || loading">
+        <mat-icon *ngIf="!loading">person_add</mat-icon>
+        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
+      </button>
+    </form>
+    
+    <div class="divider">
+      <span>o</span>
+    </div>
+    
+    <div class="helper">
+      ¿Ya tienes una cuenta? <a routerLink="/auth/login" class="login-link">Inicia sesión aquí</a>
+    </div>
+  </div>
+</div>

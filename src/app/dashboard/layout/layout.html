@@ -1,0 +1,16 @@
+<div class="layout" [class.sidebar-hidden]="isSidebarHidden">
+  <aside class="sidebar">
+    <app-sidebar></app-sidebar>
+  </aside>
+  <main class="content">
+    <header class="content-header">
+      <button mat-icon-button *ngIf="isMobile" (click)="toggleSidebar()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <!-- You can add more header content here, like a user menu -->
+    </header>
+    <div class="content-body">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,33 @@
+<div class="auth-wrapper">
+  <div class="brand-section">
+    <h1 class="brand-title">Metro Cuadrado</h1>
+    <div class="brand-subtitle">Sistema profesional de cálculo de materiales de construcción</div>
+  </div>
+  
+  <div class="card">
+    <h2>Login</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="tu@email.com">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password" placeholder="********">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width" type="submit" [disabled]="form.invalid || loading">
+        Iniciar sesión
+      </button>
+    </form>
+    <div class="helper">
+      ¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a>
+    </div>
+    <div class="demo">
+      <div class="demo-title">Credenciales de prueba:</div>
+      <div class="demo-item">admin@metrocuadrado.com</div>
+      <div class="demo-item">admin123</div>
+    </div>
+  </div>
+</div>

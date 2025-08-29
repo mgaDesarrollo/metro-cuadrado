@@ -1,0 +1,174 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="header-content">
+      <h1>Administración de Usuarios</h1>
+      <p>Gestiona usuarios, permisos y acceso a módulos</p>
+    </div>
+    <button mat-raised-button color="primary" class="add-user-btn" (click)="openAddUserDialog()">
+      <mat-icon>person_add</mat-icon>
+      Agregar Usuario
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{users.length}}</div>
+        <div class="stat-label">Total Usuarios</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{getAdminCount()}}</div>
+        <div class="stat-label">Administradores</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>verified_user</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{getActiveUsers()}}</div>
+        <div class="stat-label">Usuarios Activos</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <mat-icon>security</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{getModulesCount()}}</div>
+        <div class="stat-label">Módulos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar usuarios</mat-label>
+        <input matInput [(ngModel)]="searchTerm" placeholder="Nombre, email o empresa">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="filter-controls">
+      <mat-form-field appearance="outline" class="role-filter">
+        <mat-label>Filtrar por rol</mat-label>
+        <mat-select [(ngModel)]="selectedRole" (selectionChange)="filterUsers()">
+          <mat-option value="">Todos los roles</mat-option>
+          <mat-option value="admin">Administrador</mat-option>
+          <mat-option value="user">Usuario</mat-option>
+          <mat-option value="viewer">Solo lectura</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="status-filter">
+        <mat-label>Estado</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="filterUsers()">
+          <mat-option value="">Todos</mat-option>
+          <mat-option value="active">Activo</mat-option>
+          <mat-option value="inactive">Inactivo</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="users-table-container">
+    <div class="table-header">
+      <h3>Lista de Usuarios</h3>
+      <div class="table-actions">
+        <button mat-icon-button (click)="refreshUsers()" title="Actualizar">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportUsers()" title="Exportar">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="users-table">
+        <div class="table-row header-row">
+          <div class="col-user">Usuario</div>
+          <div class="col-role">Rol</div>
+          <div class="col-modules">Módulos</div>
+          <div class="col-status">Estado</div>
+          <div class="col-actions">Acciones</div>
+        </div>
+
+        <div class="table-row user-row" *ngFor="let user of filteredUsers; trackBy: trackByUserId">
+          <div class="col-user">
+            <div class="user-info">
+              <div class="user-avatar">
+                <div class="avatar-circle">{{user.name.charAt(0).toUpperCase()}}</div>
+              </div>
+              <div class="user-details">
+                <div class="user-name">{{user.name}}</div>
+                <div class="user-email">{{user.email}}</div>
+                <div class="user-company" *ngIf="user.company">{{user.company}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-role">
+            <div class="role-badge" [class]="'role-' + user.role">
+              {{getRoleLabel(user.role)}}
+            </div>
+          </div>
+          <div class="col-modules">
+            <div class="modules-list">
+              <span class="module-tag" *ngFor="let module of user.modules">
+                {{module}}
+              </span>
+              <span class="no-modules" *ngIf="user.modules.length === 0">
+                Sin módulos
+              </span>
+            </div>
+          </div>
+          <div class="col-status">
+            <div class="status-badge" [class]="'status-' + user.status">
+              <mat-icon>{{user.status === 'active' ? 'check_circle' : 'cancel'}}</mat-icon>
+              {{user.status === 'active' ? 'Activo' : 'Inactivo'}}
+            </div>
+          </div>
+          <div class="col-actions">
+            <div class="action-buttons">
+              <button mat-icon-button (click)="editUser(user)" title="Editar usuario">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="managePermissions(user)" title="Gestionar permisos">
+                <mat-icon>security</mat-icon>
+              </button>
+              <button mat-icon-button (click)="toggleUserStatus(user)" [title]="user.status === 'active' ? 'Desactivar' : 'Activar'">
+                <mat-icon>{{user.status === 'active' ? 'block' : 'check_circle'}}</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteUser(user)" title="Eliminar usuario" class="delete-btn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredUsers.length === 0">
+      <div class="empty-icon">
+        <mat-icon>people_outline</mat-icon>
+      </div>
+      <h3>No se encontraron usuarios</h3>
+      <p>No hay usuarios que coincidan con los filtros aplicados</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+</div>
