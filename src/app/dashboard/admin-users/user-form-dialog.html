@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>{{data?.mode === 'edit' ? 'Editar usuario' : 'Nuevo usuario'}}</h2>
+<div mat-dialog-content class="dialog-content">
+  <form [formGroup]="form" class="form-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre completo</mat-label>
+      <input matInput formControlName="name" placeholder="Juan Pérez">
+      <mat-error *ngIf="form.get('name')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Correo</mat-label>
+      <input matInput formControlName="email" placeholder="correo@empresa.com">
+      <mat-error *ngIf="form.get('email')?.hasError('required')">Requerido</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Formato inválido</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('emailTaken')">El email ya existe</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Empresa (opcional)</mat-label>
+      <input matInput formControlName="company" placeholder="Constructora XYZ">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rol</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="admin">Administrador</mat-option>
+        <mat-option value="user">Usuario</mat-option>
+        <mat-option value="viewer">Solo lectura</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('role')?.hasError('required')">Requerido</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{data?.mode === 'edit' ? 'Guardar' : 'Crear'}}
+  </button>
+  
+</div>
